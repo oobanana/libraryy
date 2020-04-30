@@ -1,0 +1,228 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+
+
+    <link href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+
+    <script type="text/javascript"src="webjars/jquery/3.4.1/jquery.min.js"></script>
+
+   <script type="text/javascript" th:src="@{js/main.js}" src="../static/js/main.js"></script>
+    <script type="text/javascript"src="webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+    <meta charset="ISO-8859-1">
+    <title>Spis książek</title>
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <button type="submit" class="btn btn-outline-light" data-toggle="modal" data-target="#addModal" data-whatever="@mdo">Dodaj pozycje</button>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Filtruj
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a th:href="@{status_nastanie}" class="dropdown-item" href="#">Na stanie</a>
+                    <a th:href="@{status_wypozyczone}"class="dropdown-item" href="#">Wypożyczone</a>
+                    <a th:href="@{list}"class="dropdown-item" href="#">Usuń filtr</a>
+                </div>
+            </li>
+
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Wyszukaj książkę" aria-label="Search" >
+            <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Szukaj</button>
+        </form>
+    </div>
+</nav>
+
+
+
+<div class="container">
+    <div align="central" class="naglowek" ><p><h2>Lista książek</h2></div></p>
+    <table class="table table-stripped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tytuł</th>
+            <th>Autor</th>
+            <th>Rok</th>
+            <th>Status</th>
+            <th>Wypożycz</th>
+            <th>Edycja</th>
+            <th>Usuń</th>
+
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="book:${book}">
+            <td th:text="${book.id}">ID</td>
+            <td th:text="${book.tytul}">Tytuł</td>
+            <td th:text="${book.autor}">Autor</td>
+            <td th:text="${book.rok}">Rok</td>
+            <td th:text="${book.status}">Status</td>
+            <td><button id="wypozycz" >Wypożycz</button></td>
+            <td><a th:href="@{single/(id=${book.id})}" class="btn btn-outline-info editButton">Edytuj</a></td>
+            <td><a th:href="@{delete/(id=${book.id})}" class="btn btn-outline-danger deleteButton" >Usuń</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form th:action="@{/add}" method="post">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Dodaj nową książkę</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form_group">
+                        <label for="title" class="col-form-label">Tytuł: </label>
+                        <input type="text" class="form-control" id="title" name="tytul">
+                    </div>
+                    <div class="form_group">
+                        <label for="author" class="col-form-label">Autor: </label>
+                        <input type="text" class="form-control" id="author"name="autor">
+                    </div>
+                    <div class="form_group">
+                        <label  for="year"class="col-form-label">Rok: </label>
+                        <input type="text" class="form-control" id="year"name="rok">
+                    </div>
+                    <div class="form_group">
+                        <label for="state" class="col-form-label">Status: </label>
+                        <input type="text" class="form-control" id="state"name="status">
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+                    <button type="submit" class="btn btn-primary">Dodaj</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form th:action="@{/edit}" method="put">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="editModalLabel">Edycja ksiązki</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form_group">
+                        <label for="id" class="col-form-label">ID: </label>
+                        <input type="text" class="form-control" id="id" name="id">
+                    </div>
+                    <div class="form_group">
+                        <label  for="title"class="col-form-label">Tytuł: </label>
+                        <input type="text" class="form-control" id="edit_title"name="tytul">
+                    </div>
+                    <div class="form_group">
+                        <label for="author" class="col-form-label">Autor: </label>
+                        <input type="text" class="form-control" id="edit_author"name="autor">
+                    </div>
+                    <div class="form_group">
+                        <label  for="year"class="col-form-label">Rok: </label>
+                        <input type="text" class="form-control" id="edit_year"name="rok">
+                    </div>
+                    <div class="form_group">
+                        <label for="state" class="col-form-label">Status: </label>
+                        <input type="text" class="form-control" id="edit_state"name="status">
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+                    <button type="submit" class="btn btn-primary">Zmień</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Usuwanie pozycji</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><h4>Czy usunąć wybraną pozycję?</h4></p>
+            </div>
+            <div class="modal-footer">
+                <a href="" type="button" class="btn btn-primary" id="deletedId">Usuń</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" >Anuluj</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $('#wypozycz').click(function(){
+        swal("Sukces!", "Wypożyczyłeś książkę!", "success");
+    })
+    $(document).ready(function(){
+        $('#dashboard').hover(
+            function(){
+                $(this).stop().animate(
+                    {   left:"0",
+                        backgroundColor:"rgb(27, 142, 209)"
+                    },
+                    500,
+                    "easeInSine"
+                );
+            },
+            function(){
+                $(this).stop().animate(
+                    {left:"-137px",
+                        backgroundColor:"rgb(27, 142, 209)"},
+                    1500,
+                    'easeOutBounce'
+                );
+            }
+        );
+    });
+   /* $('#usun').click(function(){
+        swal("Pozycja została usunięta"," ", "error");
+    })*/
+</script>
+
+</body>
+
+</html>
